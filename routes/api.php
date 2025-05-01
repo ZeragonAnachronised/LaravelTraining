@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [UserController::class, 'profile']);
+    Route::get('/user/{user_id}', [UserController::class, 'other']);
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/events', [EventController::class, 'index']);
+    Route::get('/event/{event_id}', [EventController::class, 'other']);
+    Route::delete('/user/{user_id}', [UserController::class, 'destroy']);
 });
+Route::post('/reg', [UserController::class, 'reg']);
+Route::post('/auth', [UserController::class, 'auth']);
+Route::patch('/user', [UserController::class, 'redact']);
+Route::fallback([EventController::class, 'notFound']);
