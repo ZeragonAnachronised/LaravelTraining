@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -50,7 +52,7 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'status' => $request->status,
-                'password' => $request->password,
+                'password' => Hash::make($request->password),
                 'user_tag' => Str::uuid()
             ]);
             $user->save();
@@ -58,6 +60,35 @@ class UserController extends Controller
                 'success' => true,
                 'user' => $user
             ], 201);
+        }
+    }
+    public function auth(Request $request) {
+        $rules = [
+            'email' => 'required',
+            'password' => 'required'
+        ];
+
+        $messages = [
+            'email.required' => 'email is required',
+            'password.required' => 'password is required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 400);
+        }
+        else if(Auth::attempt($request->all())) {
+            $token = $request->user()->createToken('bearer_token');
+
+            return response()->json([
+                'success' => true,
+                'token' => $token->plainTextToken,
+                'user' => Auth::user()
+            ], 200);
         }
     }
 }
