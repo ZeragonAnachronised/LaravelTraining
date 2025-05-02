@@ -91,4 +91,18 @@ class UserController extends Controller
             ], 200);
         }
     }
+    public function sessionDown() {
+        Auth::user()->currentAccessToken()->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'logged out'
+        ], 200);
+    }
+    public function allDown() {
+        Auth::user()->tokens()->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'all logged out'
+        ], 200);
+    }
 }
