@@ -24,7 +24,6 @@ return new class extends Migration
             $table->enum('status', ['student', 'teacher', 'worker'])->nullable();
             $table->set('destiny', ['learning', 'qualification', 'development'])->nullable();
             $table->string('password');
-            $table->dateTime('last_event')->useCurrentOnUpdate();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

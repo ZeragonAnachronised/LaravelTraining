@@ -26,6 +26,7 @@ class User extends Authenticatable
         'status',
         'destiny',
         'password',
+        'user_tag'
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime:Y-m-d',
+        'destiny' => 'array'
     ];
 
     public function events() {
